@@ -39,6 +39,8 @@ public class DriveSubsystem {
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
         imu.initialize(parameters);
 
+        driveCon.setTriggerThreshold(constants.triggerThresh);
+
         this.driveCon = driveCon;
 
         this.telemetry = telemetry;
@@ -94,7 +96,7 @@ public class DriveSubsystem {
     }
 
     void changeSpeed(){
-        if (driveCon.left_trigger > 0.7){
+        if (driveCon.left_trigger_pressed){
             constants.speedMultiplier = 0.4;
         } else {
             constants.speedMultiplier = 1;
