@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class DriveSubsystem {
+    /* define the motors/classes/variables */
     final DcMotor frontLeftMotor;
     final DcMotor backLeftMotor;
     final DcMotor frontRightMotor;
@@ -20,6 +21,7 @@ public class DriveSubsystem {
     Constants constants = new Constants();
     Gamepad driveCon;
     public DriveSubsystem(Gamepad driveCon, HardwareMap hardwareMap, Telemetry telemetry){
+        /* set settings for hardware */
         frontLeftMotor = hardwareMap.dcMotor.get("fl");
         backLeftMotor = hardwareMap.dcMotor.get("bl");
         frontRightMotor = hardwareMap.dcMotor.get("fr");
@@ -28,6 +30,7 @@ public class DriveSubsystem {
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -48,7 +51,7 @@ public class DriveSubsystem {
 
     public void FieldCentric(){
         double y = -driveCon.left_stick_y;
-        double x = -driveCon.left_stick_x;
+        double x = driveCon.left_stick_x;
         double rx = driveCon.right_stick_x;
 
         if (driveCon.options) {
@@ -101,11 +104,5 @@ public class DriveSubsystem {
         } else {
             constants.speedMultiplier = 1;
         }
-    }
-
-    public void teleData(){
-        telemetry.addLine("--DRIVE TELE--");
-        telemetry.addData("Multiplier", constants.speedMultiplier);
-        telemetry.addLine();
     }
 }
