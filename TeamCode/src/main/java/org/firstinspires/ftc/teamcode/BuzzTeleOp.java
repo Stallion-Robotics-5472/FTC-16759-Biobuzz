@@ -4,10 +4,11 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Buzz")
+@TeleOp(name = "TeleOp", group = "Buzz")
 @Disabled
-public class TeleOp extends LinearOpMode {
+public class BuzzTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
