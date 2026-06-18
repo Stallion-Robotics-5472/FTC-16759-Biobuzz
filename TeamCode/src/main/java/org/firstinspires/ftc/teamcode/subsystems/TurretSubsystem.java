@@ -8,14 +8,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class TurretSubsystem {
+public class TurretSubsystem extends Constants{
     Limelight3A ll;
     LLResult result;
     DcMotorEx pivot;
     Gamepad opCon;
     final Telemetry telemetry;
-    Constants constants = new Constants();
     double commandRot = 0;
+    public boolean initDone = false;
     public TurretSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
         ll = hardwareMap.get(Limelight3A.class,"limelight");
         pivot = hardwareMap.get(DcMotorEx.class,"pivot");
@@ -27,6 +27,8 @@ public class TurretSubsystem {
         this.opCon = opCon;
 
         this.telemetry = telemetry;
+
+        initDone = true;
     } // initialization
 
     public void turn(){

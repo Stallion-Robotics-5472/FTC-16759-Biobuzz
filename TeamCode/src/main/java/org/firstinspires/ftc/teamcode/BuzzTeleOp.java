@@ -17,6 +17,8 @@ public class BuzzTeleOp extends LinearOpMode {
 
         Superstructure ss = new Superstructure(gamepad1, gamepad2, hardwareMap, telemetry);
 
+        ss.Init();
+
         waitForStart();
 
         while (opModeIsActive()) {

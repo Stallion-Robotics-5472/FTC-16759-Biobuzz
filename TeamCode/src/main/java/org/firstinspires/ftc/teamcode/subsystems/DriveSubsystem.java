@@ -10,7 +10,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-public class DriveSubsystem {
+public class DriveSubsystem extends Constants{
     /* define the motors/classes/variables */
     final DcMotor frontLeftMotor;
     final DcMotor backLeftMotor;
@@ -18,8 +18,9 @@ public class DriveSubsystem {
     final DcMotor backRightMotor;
     final IMU imu;
     final Telemetry telemetry;
-    Constants constants = new Constants();
     Gamepad driveCon;
+    public double speedMultiplier = 1;
+    public boolean initDone = false;
     public DriveSubsystem(Gamepad driveCon, HardwareMap hardwareMap, Telemetry telemetry){
         /* set settings for hardware */
         frontLeftMotor = hardwareMap.dcMotor.get("fl");
@@ -42,11 +43,13 @@ public class DriveSubsystem {
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
         imu.initialize(parameters);
 
-        driveCon.setTriggerThreshold(constants.triggerThresh);
+        driveCon.setTriggerThreshold(triggerThresh);
 
         this.driveCon = driveCon;
 
         this.telemetry = telemetry;
+
+        initDone = true;
     } // initialization
 
     public void FieldCentric(){
@@ -73,10 +76,10 @@ public class DriveSubsystem {
 
 //        changeSpeed();
 
-        frontLeftMotor.setPower(frontLeftPower*constants.speedMultiplier);
-        backLeftMotor.setPower(backLeftPower*constants.speedMultiplier);
-        frontRightMotor.setPower(frontRightPower*constants.speedMultiplier);
-        backRightMotor.setPower(backRightPower*constants.speedMultiplier);
+        frontLeftMotor.setPower(frontLeftPower*speedMultiplier);
+        backLeftMotor.setPower(backLeftPower*speedMultiplier);
+        frontRightMotor.setPower(frontRightPower*speedMultiplier);
+        backRightMotor.setPower(backRightPower*speedMultiplier);
     }
 
     public void RobotCentric(){
@@ -92,17 +95,17 @@ public class DriveSubsystem {
 
         changeSpeed();
 
-        frontLeftMotor.setPower(frontLeftPower*constants.speedMultiplier);
-        backLeftMotor.setPower(backLeftPower*constants.speedMultiplier);
-        frontRightMotor.setPower(frontRightPower*constants.speedMultiplier);
-        backRightMotor.setPower(backRightPower*constants.speedMultiplier);
+        frontLeftMotor.setPower(frontLeftPower*speedMultiplier);
+        backLeftMotor.setPower(backLeftPower*speedMultiplier);
+        frontRightMotor.setPower(frontRightPower*speedMultiplier);
+        backRightMotor.setPower(backRightPower*speedMultiplier);
     }
 
     void changeSpeed(){
         if (driveCon.left_trigger_pressed){
-            constants.speedMultiplier = 0.4;
+            speedMultiplier = 0.4;
         } else {
-            constants.speedMultiplier = 1;
+            speedMultiplier = 1;
         }
     }
 }

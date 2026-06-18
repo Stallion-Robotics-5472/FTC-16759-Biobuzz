@@ -5,38 +5,47 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class IntakeSubsystem {
-    final DcMotorEx intake;
+public class IntakeSubsystem extends Constants{
+    final DcMotor intake;
     final Telemetry telemetry;
-    Constants constants = new Constants();
+    ElapsedTime outtakeTimer = new ElapsedTime();
     Gamepad opCon;
-    public boolean intakeOn = false;
+    public boolean initDone = false;
     public IntakeSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
-        intake = hardwareMap.get(DcMotorEx.class,"intake");
+        intake = hardwareMap.get(DcMotor.class,"intake");
 
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        opCon.setTriggerThreshold(constants.triggerThresh);
+        opCon.setTriggerThreshold(triggerThresh);
 
         this.opCon = opCon;
 
         this.telemetry = telemetry;
+
+        initDone = true;
     } // initialization
 
     public void collect(){
-        intakeOn = opCon.right_trigger_pressed;
+        boolean intakeOn = opCon.right_trigger_pressed;
 
-        if (intakeOn){
-            intake.setVelocity(2700);
+        if (intakeOn) {
+            intake.setPower(1);
+            if (intake.getPower() < 0.8){
+                outtakeTimer.reset();
+                while (outtakeTimer.milliseconds() < 1500) {
+                    intake.setPower(-1);
+                }
+            }
         } else {
-            intake.setVelocity(0);
+            intake.setPower(0);
         }
+    }
+
+    public boolean intakeIsOn(){
+        return intake.getPower() < 0.2 && intake.getPower() > -0.2;
     }
 }

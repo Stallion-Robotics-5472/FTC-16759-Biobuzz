@@ -1,74 +1,64 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class DumperSubsystem {
+public class DumperSubsystem extends Constants{
     final DcMotorEx leftElev;
     final DcMotorEx rightElev;
+    final Servo hopper;
     final Telemetry telemetry;
-    final Servo leftPivot;
-    final Servo rightPivot;
-    Constants constants = new Constants();
     Gamepad opCon;
     public int commandPos = 0;
     int veloMult = 1;
+    ElevatorTrapezoidalMotionProfile elevator;
+    public boolean initDone = false;
     public DumperSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
         leftElev = hardwareMap.get(DcMotorEx.class,"leftElev");
         rightElev = hardwareMap.get(DcMotorEx.class,"rightElev");
-        leftPivot = hardwareMap.get(Servo.class,"leftPivot");
-        rightPivot = hardwareMap.get(Servo.class,"rightPivot");
+        hopper = hardwareMap.get(Servo.class, "hopper");
 
 //        leftElev.setDirection(DcMotorSimple.Direction.REVERSE);
 //        rightElev.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftPivot.setDirection(Servo.Direction.FORWARD);
-        rightPivot.setDirection(Servo.Direction.REVERSE);
 
-        leftElev.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightElev.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elevator = new ElevatorTrapezoidalMotionProfile(
+                leftElev, rightElev,
+                elevkP, elevkI, elevkD, elevkF,
+                maxVel, maxAccel
+        );
 
-        leftElev.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightElev.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        leftPivot.scaleRange(constants.levelAng,constants.tipAng);
-        rightPivot.scaleRange(constants.levelAng,constants.tipAng);
+        elevator.resetEncoders();
 
         this.opCon = opCon;
 
         this.telemetry = telemetry;
+
+        elevator.resetEncoders();
+
+        this.initDone = true;
     } // initialization
 
     public void tuck(){
-        goToPos(0);
-        tip(0);
+        elevatorSetHeight(tuckedExt);
     }
 
     public void raise(){
-        if (opCon.right_bumper){
-            commandPos = constants.maxExt;
-        } else if (opCon.left_bumper){
-            commandPos = constants.halfExt;
-        }
-        goToPos(commandPos);
-        tip(0);
-    }
+        if (opCon.dpadUpWasPressed()) {commandPos = highExt;
+        } else if (opCon.dpadRightWasPressed()) {commandPos = midExt;
+        } else if (opCon.dpadDownWasPressed()) {commandPos = lowExt;}
 
-    public void dump(){
-        goToPos(commandPos);
-        tip(1);
+        elevatorSetHeight(commandPos);
     }
 
     void goToPos(int pos){
-        if (pos > constants.maxExt){
-            pos = constants.maxExt;
-        } else if (pos < constants.tuckedExt) {
-            pos = constants.tuckedExt;
+        if (pos > highExt){
+            pos = highExt;
+        } else if (pos < tuckedExt) {
+            pos = tuckedExt;
         }
 
         if (leftElev.getCurrentPosition() != pos || rightElev.getCurrentPosition() != pos) {
@@ -77,13 +67,16 @@ public class DumperSubsystem {
                 if (pos > leftElev.getCurrentPosition()){veloMult = 1;}
                 else if (pos < leftElev.getCurrentPosition()){veloMult = -1;}
 
-                leftElev.setVelocity(error * constants.elevKP * veloMult);
-                rightElev.setVelocity(error * constants.elevKP * veloMult);
+                leftElev.setVelocity(error * elevkP * veloMult);
+                rightElev.setVelocity(error * elevkP * veloMult);
         }
     }
 
-    void tip(double angle){
-        leftPivot.setPosition(angle);
-        rightPivot.setPosition(angle);
+    void elevatorSetHeight(double targetMM) {
+        elevator.goToPos(targetMM);
+
+        while (elevator.isBusy()) {
+            elevator.update();
+        }
     }
 }

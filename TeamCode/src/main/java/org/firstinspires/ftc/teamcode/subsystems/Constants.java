@@ -4,29 +4,29 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Constants {
     /* define the constants */
-    public double speedMultiplier = 1;
-    public final int maxExt = 3650;
-    public final int halfExt = maxExt/2;
-    public final int tuckedExt = 0;
-    public final int tipAng = 25;
-    public final int levelAng = 0;
-    public final double elevKP = 2.2;
-    public final float triggerThresh = 0.7f;
-    public final double xPodOffset = 0;
-    public final double yPodOffset = 0;
-    public final Pose2D startPose = new Pose2D(
+    public static final int tuckedExt = 0;
+    public static final int highExt = 2600;
+    public static final int midExt = highExt/2;
+    public static final int lowExt = highExt/4;
+    public static final double elevkP = 0.012;
+    public static final double elevkI = 0.000;
+    public static final double elevkD = 0.0006;
+    public static final double elevkF = 0.15;
+    public static final double maxVel = 500;
+    public static final double maxAccel = 1000;
+    public static final float triggerThresh = 0.7f;
+    public static final double xPodOffset = 0;
+    public static final double yPodOffset = 0;
+    public static final Pose2D startPose = new Pose2D(
             DistanceUnit.INCH,
             0,
             0,
             AngleUnit.RADIANS,
             Math.toRadians(0)
     );
-    public final Pose2D camOffset = new Pose2D(
+    public static final Pose2D camOffset = new Pose2D(
             DistanceUnit.INCH,
             0,
             0,
