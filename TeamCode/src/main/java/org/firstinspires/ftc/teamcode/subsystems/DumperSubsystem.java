@@ -11,16 +11,16 @@ public class DumperSubsystem extends Constants{
     final DcMotorEx leftElev;
     final DcMotorEx rightElev;
     final Servo hopper;
+    final Servo intakeFlap;
     final Telemetry telemetry;
     Gamepad opCon;
     public int commandPos = 0;
-    int veloMult = 1;
     ElevatorTrapezoidalMotionProfile elevator;
-    public boolean initDone = false;
     public DumperSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
         leftElev = hardwareMap.get(DcMotorEx.class,"leftElev");
         rightElev = hardwareMap.get(DcMotorEx.class,"rightElev");
         hopper = hardwareMap.get(Servo.class, "hopper");
+        intakeFlap = hardwareMap.get(Servo.class, "intakeFlap");
 
 //        leftElev.setDirection(DcMotorSimple.Direction.REVERSE);
 //        rightElev.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -33,25 +33,39 @@ public class DumperSubsystem extends Constants{
 
         elevator.resetEncoders();
 
+        hopper.scaleRange(0,1);
+        intakeFlap.scaleRange(0,1);
+
+        // 0 = closed, 1 = open
+
         this.opCon = opCon;
 
         this.telemetry = telemetry;
-
-        elevator.resetEncoders();
-
-        this.initDone = true;
     } // initialization
 
     public void tuck(){
-        elevatorSetHeight(tuckedExt);
+        if (elevator.getCurrentPositionMM() != tuckedExt || intakeFlap.getPosition() != 1 || hopper.getPosition() != 0) {
+            elevatorSetHeight(tuckedExt);
+            intakeFlap.setPosition(1);
+            hopper.setPosition(0);
+        }
     }
 
     public void raise(){
-        if (opCon.dpadUpWasPressed()) {commandPos = highExt;
-        } else if (opCon.dpadRightWasPressed()) {commandPos = midExt;
-        } else if (opCon.dpadDownWasPressed()) {commandPos = lowExt;}
+        if (opCon.dpadUpWasPressed() && commandPos != highExt) {commandPos = highExt;}
+        else if (opCon.dpadRightWasPressed() && commandPos != midExt) {commandPos = midExt;}
+        else if (opCon.dpadDownWasPressed() && commandPos != lowExt) {commandPos = lowExt;}
 
-        elevatorSetHeight(commandPos);
+        if (elevator.getCurrentPositionMM() != commandPos || intakeFlap.getPosition() != 0) {
+            elevatorSetHeight(commandPos);
+            intakeFlap.setPosition(0);
+        }
+    }
+
+    public void dump(){
+        if (hopper.getPosition() != 1){
+            hopper.setPosition(1);
+        }
     }
 
     void goToPos(int pos){
@@ -64,8 +78,10 @@ public class DumperSubsystem extends Constants{
         if (leftElev.getCurrentPosition() != pos || rightElev.getCurrentPosition() != pos) {
                 int error = Math.abs(pos - leftElev.getCurrentPosition());
 
+                int veloMult;
+
                 if (pos > leftElev.getCurrentPosition()){veloMult = 1;}
-                else if (pos < leftElev.getCurrentPosition()){veloMult = -1;}
+                else {veloMult = -1;}
 
                 leftElev.setVelocity(error * elevkP * veloMult);
                 rightElev.setVelocity(error * elevkP * veloMult);

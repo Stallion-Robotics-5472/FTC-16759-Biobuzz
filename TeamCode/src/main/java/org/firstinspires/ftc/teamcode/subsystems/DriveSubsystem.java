@@ -52,7 +52,7 @@ public class DriveSubsystem extends Constants{
         initDone = true;
     } // initialization
 
-    public void FieldCentric(){
+    public void FieldCentric(double heading){
         double y = -driveCon.left_stick_y;
         double x = driveCon.left_stick_x;
         double rx = driveCon.right_stick_x;
@@ -61,7 +61,7 @@ public class DriveSubsystem extends Constants{
             imu.resetYaw();
         }
 
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double botHeading = Math.toRadians(heading);
 
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
