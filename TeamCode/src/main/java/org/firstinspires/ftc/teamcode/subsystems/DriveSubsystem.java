@@ -20,7 +20,6 @@ public class DriveSubsystem extends Constants{
     final Telemetry telemetry;
     Gamepad driveCon;
     public double speedMultiplier = 1;
-    public boolean initDone = false;
     public DriveSubsystem(Gamepad driveCon, HardwareMap hardwareMap, Telemetry telemetry){
         /* set settings for hardware */
         frontLeftMotor = hardwareMap.dcMotor.get("fl");
@@ -31,12 +30,16 @@ public class DriveSubsystem extends Constants{
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -48,8 +51,6 @@ public class DriveSubsystem extends Constants{
         this.driveCon = driveCon;
 
         this.telemetry = telemetry;
-
-        initDone = true;
     } // initialization
 
     public void FieldCentric(double heading){
@@ -57,29 +58,32 @@ public class DriveSubsystem extends Constants{
         double x = driveCon.left_stick_x;
         double rx = driveCon.right_stick_x;
 
-        if (driveCon.options) {
-            imu.resetYaw();
+        if (Math.abs(y) > 0.03 || Math.abs(x) > 0.03 || Math.abs(rx) > 0.03) {
+            double botHeading = Math.toRadians(heading);
+
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+            rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            double frontLeftPower = (rotY + rotX + rx) / denominator;
+            double backLeftPower = (rotY - rotX + rx) / denominator;
+            double frontRightPower = (rotY - rotX - rx) / denominator;
+            double backRightPower = (rotY + rotX - rx) / denominator;
+
+            changeSpeed();
+
+            frontLeftMotor.setPower(frontLeftPower * speedMultiplier);
+            backLeftMotor.setPower(backLeftPower * speedMultiplier);
+            frontRightMotor.setPower(frontRightPower * speedMultiplier);
+            backRightMotor.setPower(backRightPower * speedMultiplier);
+        } else {
+            frontLeftMotor.setPower(0);
+            backLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            backRightMotor.setPower(0);
         }
-
-        double botHeading = Math.toRadians(heading);
-
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-        rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
-
-//        changeSpeed();
-
-        frontLeftMotor.setPower(frontLeftPower*speedMultiplier);
-        backLeftMotor.setPower(backLeftPower*speedMultiplier);
-        frontRightMotor.setPower(frontRightPower*speedMultiplier);
-        backRightMotor.setPower(backRightPower*speedMultiplier);
     }
 
     public void RobotCentric(){

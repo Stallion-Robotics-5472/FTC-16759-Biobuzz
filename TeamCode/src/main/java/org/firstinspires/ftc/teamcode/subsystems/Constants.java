@@ -22,6 +22,11 @@ public class Constants {
     public static final double maxVel = 500;
     public static final double maxAccel = 1000;
 
+    //---------- INTAKE CONSTANTS ----------
+    public static final double intakekP = 0.1;
+    public static final double intakekI = 0.1;
+    public static final double intakekD = 0.1;
+
     //---------- GAMEPAD CONSTANTS ----------
     public static final float triggerThresh = 0.7f;
 

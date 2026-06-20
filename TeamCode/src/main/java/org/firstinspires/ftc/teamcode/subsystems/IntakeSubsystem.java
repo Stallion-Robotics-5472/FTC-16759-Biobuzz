@@ -15,19 +15,19 @@ public class IntakeSubsystem extends Constants{
     final Telemetry telemetry;
     ElapsedTime outtakeTimer = new ElapsedTime();
     Gamepad opCon;
-    public boolean initDone = false;
     public IntakeSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
         intake = hardwareMap.get(DcMotorEx.class,"intake");
 
         intake.setDirection(DcMotorEx.Direction.REVERSE);
+        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setVelocityPIDFCoefficients(intakekP, intakekI, intakekD, 0);
 
         opCon.setTriggerThreshold(triggerThresh);
 
         this.opCon = opCon;
 
         this.telemetry = telemetry;
-
-        initDone = true;
     } // initialization
 
     public void collect(){
@@ -36,16 +36,20 @@ public class IntakeSubsystem extends Constants{
         if (intakeOn && intake.getCurrent(CurrentUnit.AMPS) > 9) {
             outtakeTimer.reset();
             if (outtakeTimer.milliseconds() < 250) {
-                intake.setPower(-1);
+                intake.setVelocity(-2000);
             }
         } else if (intakeOn) {
-            intake.setPower(1);
+            intake.setVelocity(2200);
         } else {
-            intake.setPower(0);
+            intake.setVelocity(0);
         }
     }
 
-    public boolean intakeIsOn(){
-        return intake.getPower() < 0.2 && intake.getPower() > -0.2;
+    public void disableIntake(){
+        intake.setMotorDisable();
+    }
+
+    public void enableIntake(){
+        intake.setMotorEnable();
     }
 }
