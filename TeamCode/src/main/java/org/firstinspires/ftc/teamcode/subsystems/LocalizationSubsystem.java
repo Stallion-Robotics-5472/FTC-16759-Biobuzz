@@ -219,8 +219,8 @@ public final class LocalizationSubsystem {
 
         // ── Pinpoint: pod offsets must be supplied in mm to the driver API ────
         pinpoint.setOffsets(
-                pinpointXOffset_in * 25.4,
-                pinpointYOffset_in * 25.4,
+                pinpointXOffset_in,
+                pinpointYOffset_in,
                 DistanceUnit.INCH
         );
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
