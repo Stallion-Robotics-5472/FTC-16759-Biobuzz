@@ -15,6 +15,7 @@ public class TurretSubsystem extends Constants{
     Gamepad opCon;
     final Telemetry telemetry;
     double commandRot = 0;
+    //testing
     public boolean initDone = false;
     public TurretSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
         ll = hardwareMap.get(Limelight3A.class,"limelight");
