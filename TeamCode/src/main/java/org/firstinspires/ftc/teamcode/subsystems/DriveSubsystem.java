@@ -53,37 +53,41 @@ public class DriveSubsystem extends Constants{
         this.telemetry = telemetry;
     } // initialization
 
-    public void FieldCentric(double heading){
-        double y = -driveCon.left_stick_y;
+    public void FieldCentric(){
+        double y = -driveCon.left_stick_y; // Remember, Y stick value is reversed
         double x = driveCon.left_stick_x;
         double rx = driveCon.right_stick_x;
 
-        if (Math.abs(y) > 0.03 || Math.abs(x) > 0.03 || Math.abs(rx) > 0.03) {
-            double botHeading = Math.toRadians(heading);
-
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-            rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
-
-            changeSpeed();
-
-            frontLeftMotor.setPower(frontLeftPower * speedMultiplier);
-            backLeftMotor.setPower(backLeftPower * speedMultiplier);
-            frontRightMotor.setPower(frontRightPower * speedMultiplier);
-            backRightMotor.setPower(backRightPower * speedMultiplier);
-        } else {
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
+        // This button choice was made so that it is hard to hit on accident,
+        // it can be freely changed based on preference.
+        // The equivalent button is start on Xbox-style controllers.
+        if (driveCon.options) {
+            imu.resetYaw();
         }
+
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        // Rotate the movement direction counter to the bot's rotation
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+        rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+        double frontLeftPower = (rotY + rotX + rx) / denominator;
+        double backLeftPower = (rotY - rotX + rx) / denominator;
+        double frontRightPower = (rotY - rotX - rx) / denominator;
+        double backRightPower = (rotY + rotX - rx) / denominator;
+
+        changeSpeed();
+
+        frontLeftMotor.setPower(frontLeftPower * speedMultiplier);
+        backLeftMotor.setPower(backLeftPower * speedMultiplier);
+        frontRightMotor.setPower(frontRightPower * speedMultiplier);
+        backRightMotor.setPower(backRightPower * speedMultiplier);
     }
 
     public void RobotCentric(){

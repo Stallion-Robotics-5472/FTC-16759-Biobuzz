@@ -4,38 +4,25 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
 @TeleOp(name = "TestingTele", group = "Buzz")
 //@Disabled
 public class Testing extends LinearOpMode {
-
-    DcMotorEx motor;
-    double kP;
-    double kV;
-    double kG;
-    double maxVel;
-    double maxAccel;
+    IntakeSubsystem intakeSS;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        motor = hardwareMap.get(DcMotorEx.class,"motor");
-
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(motor,maxVel,maxAccel,kP,kV,kG);
+        intakeSS = new IntakeSubsystem(gamepad1,hardwareMap,telemetry);
 
         waitForStart();
 
         while (opModeIsActive()) {
+            intakeSS.runIntake();
 
-
-
-            telemetry.addData("MaxVel",maxVel);
-            telemetry.addData("MaxAccel",maxAccel);
-            telemetry.addData("kP",kP);
-            telemetry.addData("kV",kV);
-            telemetry.addData("kG",kG);
             telemetry.update();
         }
     }
