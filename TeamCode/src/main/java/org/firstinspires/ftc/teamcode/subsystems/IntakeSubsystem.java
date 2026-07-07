@@ -14,14 +14,13 @@ public class IntakeSubsystem extends Constants{
     final DcMotorEx intake;
     final Telemetry telemetry;
     ElapsedTime outtakeTimer = new ElapsedTime();
-    Gamepad opCon;
     enum IntakeStates{
         IDLE,
         COLLECT,
         SPIT
     }
     IntakeStates intakeState;
-    public IntakeSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
+    public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         intake = hardwareMap.get(DcMotorEx.class,"intake");
 
         intake.setDirection(DcMotorEx.Direction.REVERSE);
@@ -29,18 +28,12 @@ public class IntakeSubsystem extends Constants{
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake.setVelocityPIDFCoefficients(intakekP, intakekI, intakekD, 0);
 
-        opCon.setTriggerThreshold(triggerThresh);
-
         intakeState = IntakeStates.IDLE;
-
-        this.opCon = opCon;
 
         this.telemetry = telemetry;
     } // initialization
 
-    public void runIntake(){
-        boolean intakeOn = opCon.right_trigger_pressed;
-
+    public void runIntake(boolean intakeOn){
         switch (intakeState){
             case IDLE:
                 if (intake.getVelocity() != 0) { intake.setVelocity(0); }
@@ -62,7 +55,6 @@ public class IntakeSubsystem extends Constants{
                     intake.setVelocity(-2000);
                 }
                 intakeState = IntakeStates.COLLECT;
-
         }
     }
 

@@ -18,9 +18,8 @@ public class DriveSubsystem extends Constants{
     final DcMotor backRightMotor;
     final IMU imu;
     final Telemetry telemetry;
-    Gamepad driveCon;
     public double speedMultiplier = 1;
-    public DriveSubsystem(Gamepad driveCon, HardwareMap hardwareMap, Telemetry telemetry){
+    public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         /* set settings for hardware */
         frontLeftMotor = hardwareMap.dcMotor.get("fl");
         backLeftMotor = hardwareMap.dcMotor.get("bl");
@@ -46,24 +45,17 @@ public class DriveSubsystem extends Constants{
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
         imu.initialize(parameters);
 
-        driveCon.setTriggerThreshold(triggerThresh);
-
-        this.driveCon = driveCon;
-
         this.telemetry = telemetry;
     } // initialization
 
-    public void FieldCentric(){
-        double y = -driveCon.left_stick_y; // Remember, Y stick value is reversed
-        double x = driveCon.left_stick_x;
-        double rx = driveCon.right_stick_x;
+    public void FieldCentric(double y, double x, double rx, boolean slow){
 
         // This button choice was made so that it is hard to hit on accident,
         // it can be freely changed based on preference.
         // The equivalent button is start on Xbox-style controllers.
-        if (driveCon.options) {
-            imu.resetYaw();
-        }
+//        if (driveCon.options) {
+//            imu.resetYaw();
+//        }
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
@@ -82,7 +74,7 @@ public class DriveSubsystem extends Constants{
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        changeSpeed();
+        changeSpeed(slow);
 
         frontLeftMotor.setPower(frontLeftPower * speedMultiplier);
         backLeftMotor.setPower(backLeftPower * speedMultiplier);
@@ -90,27 +82,8 @@ public class DriveSubsystem extends Constants{
         backRightMotor.setPower(backRightPower * speedMultiplier);
     }
 
-    public void RobotCentric(){
-        double y = -driveCon.left_stick_y; // Remember, Y stick value is reversed
-        double x = -driveCon.left_stick_x * 1.1; // Counteract imperfect strafing
-        double rx = driveCon.right_stick_x;
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double frontLeftPower = (y + x + rx) / denominator;
-        double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
-
-        changeSpeed();
-
-        frontLeftMotor.setPower(frontLeftPower*speedMultiplier);
-        backLeftMotor.setPower(backLeftPower*speedMultiplier);
-        frontRightMotor.setPower(frontRightPower*speedMultiplier);
-        backRightMotor.setPower(backRightPower*speedMultiplier);
-    }
-
-    void changeSpeed(){
-        if (driveCon.left_trigger_pressed){
+    void changeSpeed(boolean slow){
+        if (slow){
             speedMultiplier = 0.4;
         } else {
             speedMultiplier = 1;
