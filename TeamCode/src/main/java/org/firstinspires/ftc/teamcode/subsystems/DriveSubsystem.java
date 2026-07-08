@@ -11,11 +11,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class DriveSubsystem extends Constants{
-    /* define the motors/classes/variables */
-    final DcMotor frontLeftMotor;
-    final DcMotor backLeftMotor;
-    final DcMotor frontRightMotor;
-    final DcMotor backRightMotor;
+    /* define the motors/devices/variables */
+    final DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     final IMU imu;
     final Telemetry telemetry;
     public double speedMultiplier = 1;
