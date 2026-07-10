@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.os.MessageQueue;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -46,12 +48,12 @@ public class IntakeSubsystem extends Constants{
 
                 if (!intakeOn){
                     intakeState = IntakeStates.IDLE;
-                } else if (intake.getCurrent(CurrentUnit.AMPS) > 9){
+                } else if (intake.getCurrent(CurrentUnit.MILLIAMPS) > 1500){
                     intakeState = IntakeStates.SPIT;
                 }
             case SPIT:
                 outtakeTimer.reset();
-                if (outtakeTimer.milliseconds() < 250) {
+                while (outtakeTimer.milliseconds() < 250) {
                     intake.setVelocity(-2000);
                 }
                 intakeState = IntakeStates.COLLECT;
@@ -74,10 +76,15 @@ public class IntakeSubsystem extends Constants{
 //    }
 
     public void disableIntake(){
-        intake.setMotorDisable();
+        if (intake.isMotorEnabled()) {
+            intake.setMotorDisable();
+            intakeState = IntakeStates.IDLE;
+        }
     }
 
     public void enableIntake(){
-        intake.setMotorEnable();
+        if (!intake.isMotorEnabled()) {
+            intake.setMotorEnable();
+        }
     }
 }
