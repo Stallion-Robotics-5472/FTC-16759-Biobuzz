@@ -28,7 +28,6 @@ public class IntakeSubsystem extends Constants{
         intake.setDirection(DcMotorEx.Direction.REVERSE);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake.setVelocityPIDFCoefficients(intakekP, intakekI, intakekD, 0);
 
         intakeState = IntakeStates.IDLE;
 
@@ -59,21 +58,6 @@ public class IntakeSubsystem extends Constants{
                 intakeState = IntakeStates.COLLECT;
         }
     }
-
-//    public void collect(){
-//        boolean intakeOn = opCon.right_trigger_pressed;
-//
-//        if (intakeOn && intake.getCurrent(CurrentUnit.AMPS) > 9) {
-//            outtakeTimer.reset();
-//            if (outtakeTimer.milliseconds() < 250) {
-//                intake.setVelocity(-2000);
-//            }
-//        } else if (intakeOn) {
-//            intake.setVelocity(2200);
-//        } else {
-//            intake.setVelocity(0);
-//        }
-//    }
 
     public void disableIntake(){
         if (intake.isMotorEnabled()) {

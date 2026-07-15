@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,89 +11,49 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class DumperSubsystem extends Constants{
     final DcMotorEx leftElev;
     final DcMotorEx rightElev;
-    final Servo hopper;
-    final Servo intakeFlap;
+    final Servo outtake;
+    final Servo intake;
+    final CRServo roller1;
+    final CRServo roller2;
     final Telemetry telemetry;
-    Gamepad opCon;
-    public int commandPos = 0;
-    ElevatorTrapezoidalMotionProfile elevator;
+    final Elevator elevator;
     public DumperSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
         leftElev = hardwareMap.get(DcMotorEx.class,"leftElev");
         rightElev = hardwareMap.get(DcMotorEx.class,"rightElev");
-        hopper = hardwareMap.get(Servo.class, "hopper");
-        intakeFlap = hardwareMap.get(Servo.class, "intakeFlap");
+        outtake = hardwareMap.get(Servo.class, "outtake");
+        intake = hardwareMap.get(Servo.class, "intake");
+        roller1 = hardwareMap.get(CRServo.class, "roller1");
+        roller2 = hardwareMap.get(CRServo.class, "roller2");
 
 //        leftElev.setDirection(DcMotorSimple.Direction.REVERSE);
 //        rightElev.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        elevator = new ElevatorTrapezoidalMotionProfile(
-                leftElev, rightElev,
-                elevkP, elevkI, elevkD, elevkF,
-                maxVel, maxAccel
-        );
-
-        elevator.resetEncoders();
-
-        hopper.scaleRange(0,1);
-        intakeFlap.scaleRange(0,1);
-
-        // 0 = closed, 1 = open
-
-        this.opCon = opCon;
+        elevator = new Elevator(leftElev, rightElev, elevkP, elevkF);
 
         this.telemetry = telemetry;
     } // initialization
 
     public void tuck(){
-        if (elevator.getCurrentPositionMM() != tuckedExt || intakeFlap.getPosition() != 1 || hopper.getPosition() != 0) {
-            elevatorSetHeight(tuckedExt);
-            intakeFlap.setPosition(1);
-            hopper.setPosition(0);
-        }
+        setServos(intakeOpen, outtakeClosed, 0, 0);
+        elevator.setSetpoint(tuckedExt);
     }
 
     public void raise(){
-        if (opCon.dpadUpWasPressed() && commandPos != highExt) {commandPos = highExt;}
-        else if (opCon.dpadRightWasPressed() && commandPos != midExt) {commandPos = midExt;}
-        else if (opCon.dpadDownWasPressed() && commandPos != lowExt) {commandPos = lowExt;}
-
-        if (elevator.getCurrentPositionMM() != commandPos || intakeFlap.getPosition() != 0) {
-            elevatorSetHeight(commandPos);
-            intakeFlap.setPosition(0);
-        }
+        setServos(intakeClosed, outtakeClosed, 0, 0);
+        elevator.setSetpoint(highExt);
     }
 
     public void dump(){
-        if (hopper.getPosition() != 1){
-            hopper.setPosition(1);
-        }
+        setServos(intakeClosed, outtakeOpen, 1, -1);
+        elevator.setSetpoint(highExt);
     }
 
-    void goToPos(int pos){
-        if (pos > highExt){
-            pos = highExt;
-        } else if (pos < tuckedExt) {
-            pos = tuckedExt;
-        }
-
-        if (leftElev.getCurrentPosition() != pos || rightElev.getCurrentPosition() != pos) {
-                int error = Math.abs(pos - leftElev.getCurrentPosition());
-
-                int veloMult;
-
-                if (pos > leftElev.getCurrentPosition()){veloMult = 1;}
-                else {veloMult = -1;}
-
-                leftElev.setVelocity(error * elevkP * veloMult);
-                rightElev.setVelocity(error * elevkP * veloMult);
-        }
-    }
-
-    void elevatorSetHeight(double targetMM) {
-        elevator.goToPos(targetMM);
-
-        while (elevator.isBusy()) {
-            elevator.update();
+    public void setServos(double intakeAng, double outtakeAng, double roller1Pwr, double roller2Pwr){
+        if (intake.getPosition() != intakeAng || outtake.getPosition() != outtakeAng || roller1.getPower() != roller1Pwr || roller2.getPower() != roller2Pwr){
+            intake.setPosition(intakeAng);
+            outtake.setPosition(outtakeAng);
+            roller1.setPower(roller1Pwr);
+            roller2.setPower(roller2Pwr);
         }
     }
 }
