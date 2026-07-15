@@ -17,7 +17,7 @@ public class DumperSubsystem extends Constants{
     final CRServo roller2;
     final Telemetry telemetry;
     final Elevator elevator;
-    public DumperSubsystem(Gamepad opCon, HardwareMap hardwareMap, Telemetry telemetry){
+    public DumperSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         leftElev = hardwareMap.get(DcMotorEx.class,"leftElev");
         rightElev = hardwareMap.get(DcMotorEx.class,"rightElev");
         outtake = hardwareMap.get(Servo.class, "outtake");
