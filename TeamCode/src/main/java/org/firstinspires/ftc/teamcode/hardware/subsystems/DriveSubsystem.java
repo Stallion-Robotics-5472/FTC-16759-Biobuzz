@@ -8,13 +8,19 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.hardware.Constants;
+import org.firstinspires.ftc.teamcode.hardware.PowerRamper;
 
-public class DriveSubsystem extends Constants{
+public class DriveSubsystem extends Constants {
     /* define the motors/devices/variables */
     final DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     final IMU imu;
     final Telemetry telemetry;
     double speedMultiplier = 1;
+    PowerRamper blRamp = new PowerRamper(driveRamp);
+    PowerRamper brRamp = new PowerRamper(driveRamp);
+    PowerRamper flRamp = new PowerRamper(driveRamp);
+    PowerRamper frRamp = new PowerRamper(driveRamp);
     public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         /* set settings for hardware */
         frontLeftMotor = hardwareMap.dcMotor.get("fl");
@@ -40,6 +46,11 @@ public class DriveSubsystem extends Constants{
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
         imu.initialize(parameters);
+
+        frRamp.reset(0);
+        flRamp.reset(0);
+        brRamp.reset(0);
+        blRamp.reset(0);
 
         this.telemetry = telemetry;
     } // initialization
@@ -72,10 +83,10 @@ public class DriveSubsystem extends Constants{
 
         changeSpeed(slow);
 
-        frontLeftMotor.setPower(frontLeftPower * speedMultiplier);
-        backLeftMotor.setPower(backLeftPower * speedMultiplier);
-        frontRightMotor.setPower(frontRightPower * speedMultiplier);
-        backRightMotor.setPower(backRightPower * speedMultiplier);
+        frontLeftMotor.setPower(flRamp.calculate(frontLeftPower) * speedMultiplier);
+        backLeftMotor.setPower(blRamp.calculate(backLeftPower) * speedMultiplier);
+        frontRightMotor.setPower(frRamp.calculate(frontRightPower) * speedMultiplier);
+        backRightMotor.setPower(brRamp.calculate(backRightPower) * speedMultiplier);
     }
 
     void changeSpeed(boolean slow){

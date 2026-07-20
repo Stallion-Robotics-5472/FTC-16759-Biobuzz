@@ -1,11 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.firstinspires.ftc.teamcode.hardware;
 
 public class Constants {
     /* define the constants */
@@ -20,6 +13,7 @@ public class Constants {
     public static final double outtakeOpen = 0.15;
     public static final double outtakeClosed = 0;
 
-    //---------- GAMEPAD CONSTANTS ----------
+    //---------- GLOBAL CONSTANTS ----------
     public static final float triggerThresh = 0.7f;
+    public static final double driveRamp = 0.5;
 }

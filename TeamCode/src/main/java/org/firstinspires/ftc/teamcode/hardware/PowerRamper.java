@@ -2,10 +2,6 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * Pure Java Slew Rate Limiter for FTC (No FTCLib required).
- * Prevents rapid changes in motor power/velocity to reduce mechanical jerk.
- */
 public class PowerRamper {
     private final double maxRatePerSecond;
     private double result;
