@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems;
+package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Elevator {
     DcMotorEx motor1;
@@ -12,6 +11,7 @@ public class Elevator {
     double setpoint = 0;
     double error = 0;
     int velocity = 0;
+    int lastVelocity = 0;
 
     public Elevator(DcMotorEx elev1, DcMotorEx elev2, double kP, double kF){
         motor1 = elev1;
@@ -32,9 +32,15 @@ public class Elevator {
 
         while (!isAtSetpoint()){
             error = 2 * setpoint - motor1.getCurrentPosition() - motor2.getCurrentPosition();
-            velocity = (int) (error * kP + kF);
+            velocity = (int) (0.3*(error * kP + kF) + (0.7* lastVelocity));
 
             setVelocity(velocity);
+
+            lastVelocity = velocity;
+        }
+
+        if (isAtSetpoint() && lastVelocity != 0){
+            lastVelocity = 0;
         }
     }
 

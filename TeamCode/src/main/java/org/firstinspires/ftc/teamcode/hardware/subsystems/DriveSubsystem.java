@@ -14,7 +14,7 @@ public class DriveSubsystem extends Constants{
     final DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     final IMU imu;
     final Telemetry telemetry;
-    public double speedMultiplier = 1;
+    double speedMultiplier = 1;
     public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         /* set settings for hardware */
         frontLeftMotor = hardwareMap.dcMotor.get("fl");

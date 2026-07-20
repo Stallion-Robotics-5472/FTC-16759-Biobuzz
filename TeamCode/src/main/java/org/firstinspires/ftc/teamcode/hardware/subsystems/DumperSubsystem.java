@@ -1,18 +1,23 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.hardware.Elevator;
 
 public class DumperSubsystem extends Constants{
     final DcMotorEx leftElev;
     final DcMotorEx rightElev;
-    final Servo outtake;
-    final Servo intake;
+    final ServoImplEx outtake;
+    final ServoImplEx intake;
+    final AnalogInput outtakePos;
+    final AnalogInput intakePos;
     final CRServo roller1;
     final CRServo roller2;
     final Telemetry telemetry;
@@ -20,8 +25,10 @@ public class DumperSubsystem extends Constants{
     public DumperSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         leftElev = hardwareMap.get(DcMotorEx.class,"leftElev");
         rightElev = hardwareMap.get(DcMotorEx.class,"rightElev");
-        outtake = hardwareMap.get(Servo.class, "outtake");
-        intake = hardwareMap.get(Servo.class, "intake");
+        outtake = hardwareMap.get(ServoImplEx.class, "outtake");
+        intake = hardwareMap.get(ServoImplEx.class, "intake");
+        outtakePos = hardwareMap.get(AnalogInput.class, "outtakeEncoder");
+        intakePos = hardwareMap.get(AnalogInput.class, "intakeEncoder");
         roller1 = hardwareMap.get(CRServo.class, "roller1");
         roller2 = hardwareMap.get(CRServo.class, "roller2");
 
@@ -29,6 +36,9 @@ public class DumperSubsystem extends Constants{
 //        rightElev.setDirection(DcMotorSimple.Direction.REVERSE);
 
         elevator = new Elevator(leftElev, rightElev, elevkP, elevkF);
+
+        intake.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        outtake.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
         this.telemetry = telemetry;
     } // initialization
@@ -49,11 +59,19 @@ public class DumperSubsystem extends Constants{
     }
 
     public void setServos(double intakeAng, double outtakeAng, double roller1Pwr, double roller2Pwr){
-        if (intake.getPosition() != intakeAng || outtake.getPosition() != outtakeAng || roller1.getPower() != roller1Pwr || roller2.getPower() != roller2Pwr){
+        if (getIntakePosition() != intakeAng || getOuttakePosition() != outtakeAng || roller1.getPower() != roller1Pwr || roller2.getPower() != roller2Pwr){
             intake.setPosition(intakeAng);
             outtake.setPosition(outtakeAng);
             roller1.setPower(roller1Pwr);
             roller2.setPower(roller2Pwr);
         }
+    }
+
+    double getIntakePosition(){
+        return intakePos.getVoltage()/3.3;
+    }
+
+    double getOuttakePosition(){
+        return outtakePos.getVoltage()/3.3;
     }
 }
