@@ -21,6 +21,7 @@ public class DriveSubsystem extends Constants {
     PowerRamper brRamp = new PowerRamper(driveRamp);
     PowerRamper flRamp = new PowerRamper(driveRamp);
     PowerRamper frRamp = new PowerRamper(driveRamp);
+
     public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         /* set settings for hardware */
         frontLeftMotor = hardwareMap.dcMotor.get("fl");
