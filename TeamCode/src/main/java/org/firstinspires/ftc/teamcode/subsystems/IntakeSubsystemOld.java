@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.hardware.Constants;
 
-public class IntakeSubsystem extends Constants {
+public class IntakeSubsystemOld extends Constants {
     final DcMotorEx intake;
     final Telemetry telemetry;
     ElapsedTime outtakeTimer = new ElapsedTime();
@@ -19,7 +19,7 @@ public class IntakeSubsystem extends Constants {
         SPIT
     }
     IntakeStates intakeState;
-    public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
+    public IntakeSubsystemOld(HardwareMap hardwareMap, Telemetry telemetry){
         intake = hardwareMap.get(DcMotorEx.class,"intake");
 
         intake.setDirection(DcMotorEx.Direction.REVERSE);
