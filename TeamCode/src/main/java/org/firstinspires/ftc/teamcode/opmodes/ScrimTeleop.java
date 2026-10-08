@@ -68,4 +68,12 @@ public class ScrimTeleop extends CommandOpMode {
     public void onStart() {
 
     }
+    /*This is the stop*/
+    @Override
+    public void onStop(){
+        shooter.stop();
+        drive.stop();
+        drive.getLocalization().stop();
+
+    }
 }

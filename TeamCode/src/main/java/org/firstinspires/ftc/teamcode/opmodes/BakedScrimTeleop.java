@@ -57,8 +57,8 @@ public class BakedScrimTeleop extends LinearOpMode {
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
 
         imu.initialize(parameters);
 
@@ -77,10 +77,16 @@ public class BakedScrimTeleop extends LinearOpMode {
                 intake.setPower(0);
             }
 
-            if (gamepad1.right_bumper){
+            if (gamepad1.right_bumper) {
                 shooter.setVelocity(targetVelocity);
+                if (shooter.getVelocity() > targetVelocity){
+                    transferA.setPower(1);
+                    transferB.setPower(1);
+                }
             } else {
                 shooter.setVelocity(0);
+                transferA.setPower(0);
+                transferB.setPower(0);
             }
 
             if (gamepad1.dpadUpWasPressed()) { kP += 0.1; replacePID(); }
