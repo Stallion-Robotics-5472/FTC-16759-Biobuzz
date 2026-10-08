@@ -23,9 +23,9 @@ public class BakedScrimTeleop extends LinearOpMode {
     CRServo transferB;
     DcMotorEx shooter;
     IMU imu;
-    double targetVelocity = 2500;
-    double kP = 1;
-    double kD = 0.05;
+    double targetVelocity = 2000;
+    double kP = 10;
+    double kD = 0.1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,11 +40,11 @@ public class BakedScrimTeleop extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
 
 //        fl.setDirection(DcMotorSimple.Direction.REVERSE);
-//        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+        fr.setDirection(DcMotorSimple.Direction.REVERSE);
 //        bl.setDirection(DcMotorSimple.Direction.REVERSE);
-//        br.setDirection(DcMotorSimple.Direction.REVERSE);
+        br.setDirection(DcMotorSimple.Direction.REVERSE);
 //        intake.setDirection(DcMotorSimple.Direction.REVERSE);
-//        transferA.setDirection(CRServo.Direction.REVERSE);
+        transferA.setDirection(CRServo.Direction.REVERSE);
 //        transferB.setDirection(CRServo.Direction.REVERSE);
 //        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -62,7 +62,7 @@ public class BakedScrimTeleop extends LinearOpMode {
 
         imu.initialize(parameters);
 
-        shooter.setVelocityPIDFCoefficients(kP, 0, kD, 0);
+//        shooter.setVelocityPIDFCoefficients(kP, 0, kD, 0);
 
         waitForStart();
 
@@ -79,7 +79,7 @@ public class BakedScrimTeleop extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 shooter.setVelocity(targetVelocity);
-                if (shooter.getVelocity() > targetVelocity){
+                if (shooter.getVelocity() > targetVelocity-100){
                     transferA.setPower(1);
                     transferB.setPower(1);
                 }
