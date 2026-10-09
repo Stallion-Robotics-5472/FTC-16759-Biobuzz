@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name = "ScrimTeleOp", group = "Scrim")
+@TeleOp(name = "Scrim TeleOp", group = "Scrim")
 public class BakedScrimTeleop extends LinearOpMode {
     DcMotor fl;
     DcMotor bl;
@@ -22,7 +22,6 @@ public class BakedScrimTeleop extends LinearOpMode {
     CRServo transferA;
     CRServo transferB;
     DcMotorEx shooter;
-    IMU imu;
     double targetVelocity = 2000;
     double kP = 10;
     double kD = 0.1;
@@ -37,7 +36,6 @@ public class BakedScrimTeleop extends LinearOpMode {
         transferA = hardwareMap.get(CRServo.class, "transferA");
         transferB = hardwareMap.get(CRServo.class, "transferB");
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
-        imu = hardwareMap.get(IMU.class, "imu");
 
 //        fl.setDirection(DcMotorSimple.Direction.REVERSE);
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -56,12 +54,6 @@ public class BakedScrimTeleop extends LinearOpMode {
 
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-
-        imu.initialize(parameters);
-
 //        shooter.setVelocityPIDFCoefficients(kP, 0, kD, 0);
 
         waitForStart();
@@ -69,7 +61,7 @@ public class BakedScrimTeleop extends LinearOpMode {
         while (opModeIsActive()){
             telemetry.update();
 
-            fieldCentricDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            fieldCentricDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x*1.1, gamepad1.right_stick_x);
 
             if (gamepad1.left_trigger > 0.1 || gamepad1.right_trigger > 0.1){
                 intake.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
@@ -85,36 +77,25 @@ public class BakedScrimTeleop extends LinearOpMode {
                 }
             } else {
                 shooter.setVelocity(0);
-                transferA.setPower(0);
-                transferB.setPower(0);
+                transferA.setPower(-1);
+                transferB.setPower(-1);
             }
 
-            if (gamepad1.dpadUpWasPressed()) { kP += 0.1; replacePID(); }
-            if (gamepad1.dpadDownWasPressed()) { kP -= 0.1; replacePID(); }
-            if (gamepad1.dpadLeftWasPressed()) { kD += 0.05; replacePID(); }
-            if (gamepad1.dpadRightWasPressed()) { kD -= 0.05; replacePID(); }
+            if (gamepad1.dpadUpWasPressed()) {targetVelocity += 50;}
+            if (gamepad1.dpadDownWasPressed()) {targetVelocity -= 50;}
 
             telemetry.addData("velo", shooter.getVelocity());
+            telemetry.addData("trigger", gamepad1.left_trigger);
+            telemetry.addData("Target", targetVelocity);
         }
     }
 
     public void fieldCentricDrive(double y, double x, double rx){
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-        // Rotate the movement direction counter to the bot's rotation
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-        rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-        // Denominator is the largest motor power (absolute value) or 1
-        // This ensures all the powers maintain the same ratio,
-        // but only if at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
 
         fl.setPower(frontLeftPower);
         bl.setPower(backLeftPower);
