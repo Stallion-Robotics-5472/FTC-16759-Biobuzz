@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scrimbot.ScrimShooterSubsys;
 
 @TeleOp(name = "OLD")
 @Disabled
-public class ScrimTeleop extends CommandOpMode {
+public class MeetTeleOp extends CommandOpMode {
     ScrimIntakeSubsys intake;
     ScrimShooterSubsys shooter;
     DriveSubsystem drive;
