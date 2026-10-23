@@ -28,7 +28,7 @@
  * actually correct -- in exactly the situation that mode exists for. The two modes
  * are otherwise identical from here down.
  */
-package org.firstinspires.ftc.teamcode.commands;
+package org.firstinspires.ftc.teamcode.lib.command.commands;
 
 import org.firstinspires.ftc.teamcode.lib.command.Command;
 import org.firstinspires.ftc.teamcode.lib.geometry.Translation2d;

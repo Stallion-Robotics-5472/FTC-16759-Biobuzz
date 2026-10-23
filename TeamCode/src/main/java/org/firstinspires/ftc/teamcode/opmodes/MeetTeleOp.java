@@ -52,22 +52,29 @@ public class MeetTeleOp extends CommandOpMode {
         }, drive).withName("DriverControl"));
 
         setDefaultCommand(intake, new RunCommand(() -> {
-            double intakeSpeed = gamepad1.left_trigger > 0.5 ? 1.0 : 0;
+            double intakeSpeed = gamepad1.left_trigger > 0.1 ? 1.0 : 0;
             intake.setIntake(intakeSpeed);
-        }, intake).withName("IntakePower"));
+        }, intake).withName("IntakeControl"));
 
         setDefaultCommand(shooter, new RunCommand(() -> {
             whenPressed(() -> gamepad1.dpad_up, Commands.runOnce(() -> targetVelocity += 50));
             whenPressed(() -> gamepad1.dpad_down, Commands.runOnce(() -> targetVelocity -= 50));
             shooterVelocity = gamepad1.right_trigger > 0.5 ? targetVelocity : 500;
             shooter.setShooter(shooterVelocity);
-        }, shooter).withName("ShooterVelocity"));
+
+        }, shooter).withName("ShooterControl"));
     }
 
     @Override
     public void onStart() {
 
     }
+
+    @Override
+    public void periodic() {
+        drive.addTelemetry(telemetry);
+    }
+
     /*This is the stop*/
     @Override
     public void onStop(){

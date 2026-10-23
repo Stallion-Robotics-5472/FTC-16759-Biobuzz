@@ -30,7 +30,7 @@ package org.firstinspires.ftc.teamcode.opmodes.shivpathing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.AimAndShootCommand;
+import org.firstinspires.ftc.teamcode.lib.command.commands.AimAndShootCommand;
 import org.firstinspires.ftc.teamcode.lib.command.CommandOpMode;
 import org.firstinspires.ftc.teamcode.lib.command.Commands;
 import org.firstinspires.ftc.teamcode.lib.command.RunCommand;

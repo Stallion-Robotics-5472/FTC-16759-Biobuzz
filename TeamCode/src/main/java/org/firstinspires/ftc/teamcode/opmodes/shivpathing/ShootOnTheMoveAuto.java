@@ -21,7 +21,7 @@ package org.firstinspires.ftc.teamcode.opmodes.shivpathing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.commands.FollowPathAndShootCommand;
+import org.firstinspires.ftc.teamcode.lib.command.commands.FollowPathAndShootCommand;
 import org.firstinspires.ftc.teamcode.lib.command.CommandOpMode;
 import org.firstinspires.ftc.teamcode.lib.command.Commands;
 import org.firstinspires.ftc.teamcode.lib.geometry.Pose2d;

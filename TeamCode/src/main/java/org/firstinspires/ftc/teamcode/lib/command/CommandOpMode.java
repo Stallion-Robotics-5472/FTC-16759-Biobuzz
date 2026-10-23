@@ -24,10 +24,12 @@
  */
 package org.firstinspires.ftc.teamcode.lib.command;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.lib.util.LoopTimer;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 public abstract class CommandOpMode extends LinearOpMode {
@@ -62,6 +64,12 @@ public abstract class CommandOpMode extends LinearOpMode {
     public final void runOpMode() throws InterruptedException {
         // The clock is a static test seam; make sure a previous test or OpMode
         // cannot leave a frozen clock behind.
+
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         CommandClock.useSystemClock();
 
         configure();
@@ -69,6 +77,9 @@ public abstract class CommandOpMode extends LinearOpMode {
         // Run the scheduler during init too, so subsystems keep their sensors
         // and telemetry live while the driver is still setting up.
         while (opModeInInit()) {
+            for (LynxModule hub : hubs) {
+                hub.clearBulkCache();
+            }
             scheduler.run();
             periodic();
             telemetry.update();

@@ -21,7 +21,7 @@
  * The solution is computed once, inside the heading source, and read back here --
  * so the shooter spins up for exactly the shot the robot is aiming.
  */
-package org.firstinspires.ftc.teamcode.commands;
+package org.firstinspires.ftc.teamcode.lib.command.commands;
 
 import org.firstinspires.ftc.teamcode.lib.command.Command;
 import org.firstinspires.ftc.teamcode.pathing.Follower;

@@ -23,7 +23,7 @@ public final class VisionConstants {
     // without a Limelight plugged in, or to A/B test fusion vs. dead reckoning.
     // Can also be toggled at runtime via Localization.setVisionEnabled(...).
     // ---------------------------------------------------------------------
-    public static final boolean VISION_ENABLED = true;
+    public static final boolean VISION_ENABLED = false;
 
     // ---------------------------------------------------------------------
     // Hardware-map device names. These must match your robot configuration.
@@ -51,7 +51,7 @@ public final class VisionConstants {
      * The unit the two offsets above are written in. Change this if you measured
      * in millimetres -- the numbers and this constant must agree.
      */
-    public static final DistanceUnit PINPOINT_OFFSET_UNIT = DistanceUnit.INCH;
+    public static final DistanceUnit PINPOINT_OFFSET_UNIT = DistanceUnit.MM;
 
     /** Pod type. Use goBILDA_SWINGARM_POD or goBILDA_4_BAR_POD for goBILDA pods. */
     public static final GoBildaPinpointDriver.GoBildaOdometryPods PINPOINT_POD_TYPE =

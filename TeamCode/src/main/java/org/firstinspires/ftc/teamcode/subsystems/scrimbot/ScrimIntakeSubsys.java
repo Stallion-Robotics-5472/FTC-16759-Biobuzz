@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.lib.command.SubsystemBase;
 
 public class ScrimIntakeSubsys extends SubsystemBase {
-    DcMotorEx intake;
+    DcMotor intake;
     double speed = 0;
     public ScrimIntakeSubsys(HardwareMap hardwareMap){
         intake = hardwareMap.get(DcMotorEx.class, "intake");
@@ -15,7 +15,7 @@ public class ScrimIntakeSubsys extends SubsystemBase {
 
     @Override
     public void periodic() {
-        speed = intake.getVelocity();
+        speed = intake.getPower();
     }
     public void setIntake(double power) { intake.setPower(power); }
     public void stop() { intake.setPower(0); }

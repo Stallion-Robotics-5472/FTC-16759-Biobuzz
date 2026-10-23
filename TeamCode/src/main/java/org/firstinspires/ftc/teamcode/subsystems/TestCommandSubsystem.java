@@ -10,15 +10,19 @@ import org.firstinspires.ftc.teamcode.lib.command.SubsystemBase;
 public class TestCommandSubsystem extends SubsystemBase {
     DcMotor motor;
     AnalogInput potentiometer;
-    double commandPower;
+    public double commandPower;
     public TestCommandSubsystem(HardwareMap hardwareMap){
         motor = hardwareMap.get(DcMotor.class, "motor");
         potentiometer = hardwareMap.get(AnalogInput.class, "poten");
     }
 
-    public void setPower(){
+    public void adjustPower(){
         commandPower = potentiometer.getVoltage()/3.3;
         motor.setPower(commandPower);
+    }
+
+    public void setPower(double power){
+        motor.setPower(power);
     }
 
     public void addTelemetry(Telemetry telemetry){
