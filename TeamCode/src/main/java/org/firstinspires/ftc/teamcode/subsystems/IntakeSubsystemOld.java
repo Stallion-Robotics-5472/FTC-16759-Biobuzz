@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.hardware.Constants;
+import org.firstinspires.ftc.teamcode.lib.util.Constants;
 
 public class IntakeSubsystemOld extends Constants {
     final DcMotorEx intake;

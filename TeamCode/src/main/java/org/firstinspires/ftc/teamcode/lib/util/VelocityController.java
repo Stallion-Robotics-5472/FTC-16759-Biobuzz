@@ -25,9 +25,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class VelocityController {
 
-    /* ================= HARDWARE CONSTANTS: EDIT THESE ================= */
-
-    /** Encoder ticks per MOTOR revolution. goBILDA 5202 6000 RPM (1:1) Yellow Jacket = 28. */
+    /* ================= HARDWARE CONSTANTS ================= */
     public static final double TICKS_PER_MOTOR_REV = 28.0;
 
     /** Belt ratio: motor revolutions per flywheel revolution. 1.0 = 1:1 belt. 2.0 = motor spins 2x flywheel. */
