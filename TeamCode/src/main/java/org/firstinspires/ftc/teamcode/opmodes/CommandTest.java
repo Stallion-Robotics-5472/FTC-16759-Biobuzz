@@ -21,15 +21,7 @@ public class CommandTest extends CommandOpMode {
 
         register(testSS);
 
-        setDefaultCommand(testSS, new RunCommand(() -> {
-            boolean requested = gamepad1.right_bumper;
-            if (requested) {
-                testSS.adjustPower();
-            }
-//            } else {
-//                testSS.setPower(testSS.commandPower);
-//            }
-        }, testSS).withName("AdjustPower"));
+//        setDefaultCo Pressed(() -> gamepad1.right_bumper, new RunCommand(testSS::adjustPower, testSS).withName("AdjustPower"));
     }
 
     @Override

@@ -14,7 +14,7 @@
  * it and the robot shoots behind the target. Feeding the known sweep rate forward
  * lets the PID handle only the leftover error.
  */
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.localization;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -29,7 +29,6 @@ import org.firstinspires.ftc.teamcode.pathing.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.pathing.PIDFController;
 import org.firstinspires.ftc.teamcode.pathing.PathConstants;
 import org.firstinspires.ftc.teamcode.shooting.AimLogic;
-import org.firstinspires.ftc.teamcode.subsystems.localization.Localization;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -85,6 +84,10 @@ public class DriveSubsystem extends SubsystemBase {
         Translation2d fieldVector = new Translation2d(driverForward, driverLeft)
                 .rotateBy(alliance.driverForward());
         driveFieldCentric(fieldVector.getX(), fieldVector.getY(), turn);
+    }
+
+    public void driveRobotCentric(double forward, double strafe, double turn){
+        drivetrain.driveRobotCentric(forward, strafe, turn);
     }
 
     /**

@@ -40,7 +40,7 @@ import org.firstinspires.ftc.teamcode.shooting.GoalSelector;
 import org.firstinspires.ftc.teamcode.shooting.GoalTargetSource;
 import org.firstinspires.ftc.teamcode.shooting.ShootingConstants;
 import org.firstinspires.ftc.teamcode.shooting.TargetSource;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.localization.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.localization.ShooterSubsystem;
 
 import java.util.function.BooleanSupplier;

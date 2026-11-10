@@ -37,7 +37,7 @@ import org.firstinspires.ftc.teamcode.pathing.PathChain;
 import org.firstinspires.ftc.teamcode.pathing.PathMarker;
 import org.firstinspires.ftc.teamcode.shooting.AimAtGoalHeading;
 import org.firstinspires.ftc.teamcode.shooting.ShootingConstants;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.localization.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.localization.ShooterSubsystem;
 
 @Autonomous(name = "Shoot On The Move Auto", group = "Auto")

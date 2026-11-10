@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.shooting.AimLogic;
 import org.firstinspires.ftc.teamcode.shooting.AimSolution;
 import org.firstinspires.ftc.teamcode.shooting.GoalSelector;
 import org.firstinspires.ftc.teamcode.shooting.ShootingConstants;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.localization.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.localization.ShooterSubsystem;
 
 import java.util.ArrayList;

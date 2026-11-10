@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.pathing.PathChain;
 import org.firstinspires.ftc.teamcode.shooting.AimAtTargetHeading;
 import org.firstinspires.ftc.teamcode.shooting.AimSolution;
 import org.firstinspires.ftc.teamcode.shooting.TargetSource;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.localization.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.localization.ShooterSubsystem;
 
 public class FollowPathAndShootCommand extends Command {

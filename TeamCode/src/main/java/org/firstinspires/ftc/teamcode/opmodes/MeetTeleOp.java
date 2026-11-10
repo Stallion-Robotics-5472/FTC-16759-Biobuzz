@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.lib.command.CommandOpMode;
@@ -10,12 +9,13 @@ import org.firstinspires.ftc.teamcode.lib.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.lib.geometry.Rotation2d;
 import org.firstinspires.ftc.teamcode.lib.util.BatteryMonitor;
 import org.firstinspires.ftc.teamcode.pathing.Alliance;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.localization.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.scrimbot.ScrimIntakeSubsys;
 import org.firstinspires.ftc.teamcode.subsystems.scrimbot.ScrimShooterSubsys;
+import org.firstinspires.ftc.teamcode.subsystems.scrimbot.ShootCommand;
 
-@TeleOp(name = "OLD")
-@Disabled
+@TeleOp(name = "Meet 1 Teleop")
+//@Disabled
 public class MeetTeleOp extends CommandOpMode {
     ScrimIntakeSubsys intake;
     ScrimShooterSubsys shooter;
@@ -24,8 +24,10 @@ public class MeetTeleOp extends CommandOpMode {
     private static final double slow = 0.4;
     private BatteryMonitor battery;
     private Alliance alliance = Alliance.RED;
-    int shooterVelocity = 0;
-    int targetVelocity = 2000;
+    boolean absolute = false;
+    double gateOpen = 0.22;
+    double gateClosed = 0.27;
+    ShootCommand shootCommand;
     @Override
     public void configure() {
         intake = new ScrimIntakeSubsys(hardwareMap);
@@ -37,50 +39,85 @@ public class MeetTeleOp extends CommandOpMode {
 
         drive.getLocalization().setStartingPose(startPose);
 
-        whenPressed(() -> gamepad1.b && opModeInInit(),
-                Commands.runOnce(() -> alliance = Alliance.RED));
-        whenPressed(() -> gamepad1.x && opModeInInit(),
-                Commands.runOnce(() -> alliance = Alliance.BLUE));
-
         setDefaultCommand(drive, new RunCommand(() -> {
             double scale = gamepad1.right_bumper ? slow : 1.0;
-            drive.driveDriverRelative(
-                    -gamepad1.left_stick_y * scale,
-                    -gamepad1.left_stick_x * scale,
-                    -gamepad1.right_stick_x * scale,
-                    alliance);
+
+            if (absolute){
+                drive.driveDriverRelative(
+                        -gamepad1.left_stick_y * scale,
+                        -gamepad1.left_stick_x * scale,
+                        -gamepad1.right_stick_x * scale,
+                    alliance);}
+            else {
+                drive.driveRobotCentric(
+                        -gamepad1.left_stick_y * scale,
+                        -gamepad1.left_stick_x * scale,
+                        -gamepad1.right_stick_x * scale
+                );
+            }
         }, drive).withName("DriverControl"));
 
         setDefaultCommand(intake, new RunCommand(() -> {
-            double intakeSpeed = gamepad1.left_trigger > 0.1 ? 1.0 : 0;
+            double intakeSpeed = gamepad2.left_trigger > 0.1 ? 1.0 : 0;
             intake.setIntake(intakeSpeed);
         }, intake).withName("IntakeControl"));
 
         setDefaultCommand(shooter, new RunCommand(() -> {
-            whenPressed(() -> gamepad1.dpad_up, Commands.runOnce(() -> targetVelocity += 50));
-            whenPressed(() -> gamepad1.dpad_down, Commands.runOnce(() -> targetVelocity -= 50));
-            shooterVelocity = gamepad1.right_trigger > 0.5 ? targetVelocity : 500;
-            shooter.setShooter(shooterVelocity);
-
+            shooter.setTPS(0);
         }, shooter).withName("ShooterControl"));
+
+        shootCommand = new ShootCommand(
+                intake,
+                shooter,
+                gateOpen,
+                gateClosed,
+                () -> gamepad2.right_trigger > 0.25,
+                () -> gamepad2.dpad_down,
+                () -> gamepad2.dpad_up
+        );
+        whileHeld(() -> gamepad2.right_trigger > 0.25, shootCommand);
     }
 
     @Override
     public void onStart() {
-
+        shooter.setGate(gateClosed);
     }
 
     @Override
     public void periodic() {
+        battery.update();
+
+        if(opModeInInit()){
+            whenPressed(() -> gamepad1.b,
+                    Commands.runOnce(() -> alliance = Alliance.RED));
+            whenPressed(() -> gamepad1.x,
+                    Commands.runOnce(() -> alliance = Alliance.BLUE));
+
+            whenPressed(() -> gamepad1.dpad_up && opModeInInit(),
+                    Commands.runOnce(() -> absolute = false));
+            whenPressed(() -> gamepad1.dpad_down && opModeInInit(),
+                    Commands.runOnce(() -> absolute = true));
+
+
+            telemetry.addLine("Select the Alliance: B for Red, X for Blue");
+            telemetry.addData("Alliance", alliance);
+            telemetry.addLine();
+            telemetry.addLine("Select the Drive Mode");
+            telemetry.addData("Drive", absolute ? "Field-Centric" : "Robot-Centric");
+            telemetry.addLine();
+            telemetry.addLine("Good Luck!");
+        }
         drive.addTelemetry(telemetry);
+        telemetry.addData("c", getScheduler().getScheduledCommands());
+        shooter.addTelemetry(telemetry);
     }
 
     /*This is the stop*/
     @Override
     public void onStop(){
+        intake.stop();
         shooter.stop();
         drive.stop();
         drive.getLocalization().stop();
-
     }
 }

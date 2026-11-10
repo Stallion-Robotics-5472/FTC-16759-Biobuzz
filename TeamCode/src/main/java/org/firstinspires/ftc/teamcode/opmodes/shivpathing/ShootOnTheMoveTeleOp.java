@@ -44,7 +44,7 @@ import org.firstinspires.ftc.teamcode.shooting.GoalTargetSource;
 import org.firstinspires.ftc.teamcode.shooting.ShootingConstants;
 import org.firstinspires.ftc.teamcode.shooting.SwitchableTargetSource;
 import org.firstinspires.ftc.teamcode.shooting.VisionTargetSource;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.localization.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.localization.ShooterSubsystem;
 
 @TeleOp(name = "Shoot On The Move (command-based)", group = "Drive")
