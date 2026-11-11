@@ -25,8 +25,11 @@ public class MeetTeleOp extends CommandOpMode {
     private BatteryMonitor battery;
     private Alliance alliance = Alliance.RED;
     boolean absolute = false;
-    double gateOpen = 0.22;
+    double gateOpen = 0.21;
     double gateClosed = 0.27;
+    double flowerUp = 0;
+    double flowerDown = 0;
+    boolean lastOptions = false;
     ShootCommand shootCommand;
     @Override
     public void configure() {
@@ -50,15 +53,18 @@ public class MeetTeleOp extends CommandOpMode {
                     alliance);}
             else {
                 drive.driveRobotCentric(
-                        -gamepad1.left_stick_y * scale,
-                        -gamepad1.left_stick_x * scale,
-                        -gamepad1.right_stick_x * scale
+                        gamepad2.left_stick_y * scale,
+                        gamepad2.left_stick_x * scale,
+                        -gamepad2.right_stick_x * scale
                 );
             }
         }, drive).withName("DriverControl"));
 
         setDefaultCommand(intake, new RunCommand(() -> {
             double intakeSpeed = gamepad2.left_trigger > 0.1 ? 1.0 : 0;
+            double flowerPos = gamepad2.options && !lastOptions ? flowerDown : flowerUp;
+            lastOptions = gamepad2.options;
+//            intake.setFlower(flowerPos);
             intake.setIntake(intakeSpeed);
         }, intake).withName("IntakeControl"));
 
@@ -81,6 +87,7 @@ public class MeetTeleOp extends CommandOpMode {
     @Override
     public void onStart() {
         shooter.setGate(gateClosed);
+//        intake.setFlower(flowerUp);
     }
 
     @Override
@@ -109,7 +116,7 @@ public class MeetTeleOp extends CommandOpMode {
         }
         drive.addTelemetry(telemetry);
         telemetry.addData("c", getScheduler().getScheduledCommands());
-        shooter.addTelemetry(telemetry);
+        telemetry.addData("velocity", shooter.getShooter().getVelocity());
     }
 
     /*This is the stop*/

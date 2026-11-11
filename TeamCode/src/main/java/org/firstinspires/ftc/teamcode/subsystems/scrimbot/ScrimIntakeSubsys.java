@@ -11,8 +11,10 @@ import org.firstinspires.ftc.teamcode.lib.command.SubsystemBase;
 
 public class ScrimIntakeSubsys extends SubsystemBase {
     DcMotor intake;
+//    Servo flower;
     public ScrimIntakeSubsys(HardwareMap hardwareMap){
         intake = hardwareMap.get(DcMotor.class, "intake");
+//        flower = hardwareMap.get(Servo.class, "flower");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -20,7 +22,8 @@ public class ScrimIntakeSubsys extends SubsystemBase {
     public void periodic() {
 
     }
-    public void setIntake(double power) { intake.setPower(power); }
+    public void setIntake(double power){ intake.setPower(power); }
+//    public void setFlower(double pos){ flower.setPosition(pos); }
     public void addTelemetry(Telemetry telemetry){}
     public DcMotor getIntake() { return intake; }
     public void stop() { intake.setPower(0); }

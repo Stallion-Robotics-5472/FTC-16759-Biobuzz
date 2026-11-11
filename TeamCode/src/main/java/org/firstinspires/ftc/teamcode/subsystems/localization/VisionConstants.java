@@ -45,8 +45,8 @@ public final class VisionConstants {
      * The sample defaults below are for goBILDA's reference build; measure and
      * replace them for your robot.
      */
-    public static final double PINPOINT_X_OFFSET = -3.125;
-    public static final double PINPOINT_Y_OFFSET = 3.375;
+    public static final double PINPOINT_X_OFFSET = -64.5;
+    public static final double PINPOINT_Y_OFFSET = -77.23;
     /**
      * The unit the two offsets above are written in. Change this if you measured
      * in millimetres -- the numbers and this constant must agree.

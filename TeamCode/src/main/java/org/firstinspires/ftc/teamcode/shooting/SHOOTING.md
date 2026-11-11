@@ -297,7 +297,7 @@ plausible, and the robot confidently shoots at empty field.
 So the command refuses to fire until MegaTag1 (which is solved without the gyro)
 has vouched for the heading. That is the same `isHeadingTrusted()` gate the
 localization layer uses; see
-[`../LOCALIZATION.md`](../LOCALIZATION.md#catching-a-flipped-start-pose). With
+[`../LOCALIZATION.md`](../subsystems/localization/LOCALIZATION.md#catching-a-flipped-start-pose). With
 vision disabled the check cannot be made, so it passes and the shot rests on the
 seeded pose — as it must, since there is nothing else to go on.
 

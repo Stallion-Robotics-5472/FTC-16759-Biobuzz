@@ -20,7 +20,7 @@ public class ScrimShooterSubsys extends SubsystemBase {
         gate = hardwareMap.get(Servo.class, "gate");
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
-                new PIDFCoefficients(400, 0, 0.05, 0));
+                new PIDFCoefficients(550, 0, 0.1, 0));
     }
 
     @Override
