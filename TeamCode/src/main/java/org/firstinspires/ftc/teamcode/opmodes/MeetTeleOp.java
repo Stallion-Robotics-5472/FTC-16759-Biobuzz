@@ -20,7 +20,7 @@ public class MeetTeleOp extends CommandOpMode {
     ScrimIntakeSubsys intake;
     ScrimShooterSubsys shooter;
     DriveSubsystem drive;
-    private static final Pose2d startPose = new Pose2d(0, 0, new Rotation2d(0));
+    private static final Pose2d startPose = new Pose2d(0, 0, new Rotation2d(Math.toRadians(90)));
     private static final double slow = 0.4;
     private BatteryMonitor battery;
     private Alliance alliance = Alliance.RED;
@@ -34,7 +34,7 @@ public class MeetTeleOp extends CommandOpMode {
     @Override
     public void configure() {
         intake = new ScrimIntakeSubsys(hardwareMap);
-        shooter = new ScrimShooterSubsys(hardwareMap);
+        shooter = new ScrimShooterSubsys(hardwareMap, telemetry);
         drive = new DriveSubsystem(hardwareMap);
         battery = BatteryMonitor.from(hardwareMap);
 
@@ -45,17 +45,20 @@ public class MeetTeleOp extends CommandOpMode {
         setDefaultCommand(drive, new RunCommand(() -> {
             double scale = gamepad1.right_bumper ? slow : 1.0;
 
+            whenPressed(() -> gamepad2.options,
+                    Commands.runOnce(() -> drive.resetHeadingController()));
+
             if (absolute){
                 drive.driveDriverRelative(
-                        -gamepad1.left_stick_y * scale,
-                        -gamepad1.left_stick_x * scale,
-                        -gamepad1.right_stick_x * scale,
+                        -gamepad2.left_stick_y * scale,
+                        -gamepad2.left_stick_x * scale,
+                        gamepad2.right_stick_x * scale,
                     alliance);}
             else {
                 drive.driveRobotCentric(
                         gamepad2.left_stick_y * scale,
                         gamepad2.left_stick_x * scale,
-                        -gamepad2.right_stick_x * scale
+                        gamepad2.right_stick_x * scale
                 );
             }
         }, drive).withName("DriverControl"));
@@ -114,9 +117,9 @@ public class MeetTeleOp extends CommandOpMode {
             telemetry.addLine();
             telemetry.addLine("Good Luck!");
         }
+        shooter.addTelemetry(telemetry);
         drive.addTelemetry(telemetry);
         telemetry.addData("c", getScheduler().getScheduledCommands());
-        telemetry.addData("velocity", shooter.getShooter().getVelocity());
     }
 
     /*This is the stop*/

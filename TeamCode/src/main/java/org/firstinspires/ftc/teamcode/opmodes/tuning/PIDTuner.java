@@ -16,7 +16,7 @@ public class PIDTuner extends LinearOpMode {
     double closed = 0.27;
     double open = 0.21;
     double target = 1110;
-    double kP = 550;
+    double kP = 250;
     double kD = 0.1;
 
     @Override
@@ -39,8 +39,8 @@ public class PIDTuner extends LinearOpMode {
             if (gamepad1.right_bumper){ shooter.setVelocity(target); }
             if (gamepad1.dpadUpWasPressed()){ kP += 10; setCoefficients(); }
             if (gamepad1.dpadDownWasPressed()){ kP -= 10; setCoefficients(); }
-            if (gamepad1.yWasPressed()){ kD += 0.01; setCoefficients(); }
-            if (gamepad1.aWasPressed()){ kD -= 0.01; setCoefficients(); }
+            if (gamepad1.yWasPressed()){ kD += 0.1; setCoefficients(); }
+            if (gamepad1.aWasPressed()){ kD -= 0.1; setCoefficients(); }
             if (gamepad1.left_trigger > 0.8){ intake.setPower(1); }
             if (gamepad1.dpadLeftWasPressed()){ target += 10; }
             if (gamepad1.dpadRightWasPressed()){ target -= 10; }

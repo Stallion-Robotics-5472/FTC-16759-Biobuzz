@@ -11,7 +11,7 @@ public class ShootCommand extends Command {
     ScrimShooterSubsys shooter;
     double open;
     double closed;
-    double targetRPM = 1000;
+    double targetRPM = 1120;
     BooleanSupplier requested;
     BooleanSupplier trimDown;
     BooleanSupplier trimUp;
@@ -49,13 +49,10 @@ public class ShootCommand extends Command {
     public void execute() {
         shooter.setTPS(targetRPM);
         trim();
+        shooter.setGate(open);
 
-        if (timer.milliseconds() > 3000) {
-            shooter.setGate(open);
+        if (timer.milliseconds() > 3000){
             intake.setIntake(1);
-        } else {
-            shooter.setGate(closed);
-            intake.setIntake(0);
         }
     }
 
