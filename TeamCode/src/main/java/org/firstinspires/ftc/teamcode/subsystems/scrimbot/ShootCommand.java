@@ -51,7 +51,7 @@ public class ShootCommand extends Command {
         trim();
         shooter.setGate(open);
 
-        if (timer.milliseconds() > 3000){
+        if (timer.milliseconds() > 2000){
             intake.setIntake(1);
         }
     }

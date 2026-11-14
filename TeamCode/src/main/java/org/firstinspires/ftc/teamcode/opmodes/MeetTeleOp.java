@@ -50,21 +50,22 @@ public class MeetTeleOp extends CommandOpMode {
 
             if (absolute){
                 drive.driveDriverRelative(
-                        -gamepad2.left_stick_y * scale,
-                        -gamepad2.left_stick_x * scale,
-                        gamepad2.right_stick_x * scale,
+                        -gamepad1.left_stick_y * scale,
+                        -gamepad1.left_stick_x * scale,
+                        gamepad1.right_stick_x * scale,
                     alliance);}
             else {
                 drive.driveRobotCentric(
-                        gamepad2.left_stick_y * scale,
-                        gamepad2.left_stick_x * scale,
-                        gamepad2.right_stick_x * scale
+                        gamepad1.left_stick_y * scale,
+                        gamepad1.left_stick_x * scale,
+                        gamepad1.right_stick_x * scale
                 );
             }
         }, drive).withName("DriverControl"));
 
         setDefaultCommand(intake, new RunCommand(() -> {
-            double intakeSpeed = gamepad2.left_trigger > 0.1 ? 1.0 : 0;
+            double intakeSpeed = gamepad1.left_trigger > 0.1 ? 1.0 : 0;
+            intakeSpeed = gamepad2.left_trigger > 0.5 ? -1.0 : intakeSpeed;
             double flowerPos = gamepad2.options && !lastOptions ? flowerDown : flowerUp;
             lastOptions = gamepad2.options;
 //            intake.setFlower(flowerPos);

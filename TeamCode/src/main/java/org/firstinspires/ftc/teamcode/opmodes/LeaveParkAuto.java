@@ -12,7 +12,7 @@ public class LeaveParkAuto extends LinearOpMode {
     DcMotor br;
     DcMotor fl;
     DcMotor fr;
-    ElapsedTime timer;
+    ElapsedTime timer = new ElapsedTime();
     boolean farPark;
 
     @Override
@@ -40,8 +40,8 @@ public class LeaveParkAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()){
-            move(0.5,0,0,
-                    farPark ? 2000 : 3000);
+            move(0.25,0,0, 2000);
+
         }
     }
 
@@ -61,10 +61,8 @@ public class LeaveParkAuto extends LinearOpMode {
     void move(double forward, double strafe, double rotate, double duration){
         timer.reset();
 
-        if (timer.milliseconds() < duration) {
+        while (timer.milliseconds() < duration) {
             mecanumDrive(forward, strafe, rotate);
-        } else {
-            mecanumDrive(0,0,0);
         }
     }
 }

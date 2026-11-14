@@ -16,7 +16,7 @@ public class TipLeaveAuto extends LinearOpMode {
     DcMotor fr;
     DcMotorEx shooter;
     DcMotor intake;
-    ElapsedTime timer;
+    ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,7 +28,7 @@ public class TipLeaveAuto extends LinearOpMode {
         intake = hardwareMap.get(DcMotor.class, "intake");
 
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
-                new PIDFCoefficients(300, 0, 0.3, 0));
+                new PIDFCoefficients(500, 0, 0.12, 0));
 
         bl.setDirection(DcMotorSimple.Direction.REVERSE);
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -74,10 +74,9 @@ public class TipLeaveAuto extends LinearOpMode {
     void move(double forward, double strafe, double rotate, double duration){
         timer.reset();
 
-        if (timer.milliseconds() < duration) {
+        while (timer.milliseconds() < duration) {
             mecanumDrive(forward, strafe, rotate);
-        } else {
-            mecanumDrive(0,0,0);
         }
+        mecanumDrive(0,0,0);
     }
 }
