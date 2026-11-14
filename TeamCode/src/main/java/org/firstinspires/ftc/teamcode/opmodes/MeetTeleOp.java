@@ -29,7 +29,7 @@ public class MeetTeleOp extends CommandOpMode {
     double gateClosed = 0.27;
     double flowerUp = 0;
     double flowerDown = 0;
-    boolean lastOptions = false;
+    boolean lastY = false;
     ShootCommand shootCommand;
     @Override
     public void configure() {
@@ -64,10 +64,10 @@ public class MeetTeleOp extends CommandOpMode {
         }, drive).withName("DriverControl"));
 
         setDefaultCommand(intake, new RunCommand(() -> {
-            double intakeSpeed = gamepad1.left_trigger > 0.1 ? 1.0 : 0;
+            double intakeSpeed = gamepad1.left_trigger > 0.2 ? 1.0 : 0;
             intakeSpeed = gamepad2.left_trigger > 0.5 ? -1.0 : intakeSpeed;
-            double flowerPos = gamepad2.options && !lastOptions ? flowerDown : flowerUp;
-            lastOptions = gamepad2.options;
+            double flowerPos = gamepad2.y && !lastY ? flowerDown : flowerUp;
+            lastY = gamepad2.options;
 //            intake.setFlower(flowerPos);
             intake.setIntake(intakeSpeed);
         }, intake).withName("IntakeControl"));

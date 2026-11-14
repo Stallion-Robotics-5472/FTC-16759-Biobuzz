@@ -8,11 +8,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoTuner extends LinearOpMode {
 
     Servo servo;
-    double pos;
+    double pos = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
         servo = hardwareMap.get(Servo.class, "servo");
+        servo.setDirection(Servo.Direction.REVERSE);
 
         servo.setPosition(0);
 

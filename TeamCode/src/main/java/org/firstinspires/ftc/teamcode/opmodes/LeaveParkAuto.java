@@ -40,7 +40,7 @@ public class LeaveParkAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()){
-            move(0.25,0,0, 2000);
+            move(0.25,0,0, 1000);
 
         }
     }

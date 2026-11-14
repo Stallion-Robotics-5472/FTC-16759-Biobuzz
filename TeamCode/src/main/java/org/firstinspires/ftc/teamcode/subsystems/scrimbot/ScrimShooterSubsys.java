@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems.scrimbot;
 
-import android.sax.TextElementListener;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.command.SubsystemBase;
-import org.firstinspires.ftc.teamcode.lib.util.VelocityController;
 
 public class ScrimShooterSubsys extends SubsystemBase {
     DcMotorEx shooter;

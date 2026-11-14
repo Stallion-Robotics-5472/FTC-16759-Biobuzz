@@ -48,13 +48,13 @@ public class TipLeaveAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()){
-            shooter.setVelocity(1120);
-            sleep(3000);
+            shooter.setVelocity(1128);
+            sleep(5000);
             intake.setPower(1);
             sleep(3000);
             shooter.setVelocity(0);
             intake.setPower(0);
-            move(-0.25,0,0,1000);
+            move( 0.25,0,0,1000);
         }
     }
 
