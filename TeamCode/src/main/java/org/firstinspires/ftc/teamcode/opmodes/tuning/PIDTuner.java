@@ -8,26 +8,21 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.lib.util.Flywheel;
+
 @TeleOp(name="PIDTuner")
 public class PIDTuner extends LinearOpMode {
-    DcMotorEx shooter;
     DcMotor intake;
-//    Servo gate;
-    double closed = 0.27;
-    double open = 0.21;
-    double target = 1110;
+    double target = 1130;
     double kP = 250;
-    double kD = 0.1;
+    double kD = 0.00005;
+    double kF = 10;
+    double stopBoostRange = 200;
+    Flywheel shooter;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        shooter = hardwareMap.get(DcMotorEx.class, "shooter");
-//        gate = hardwareMap.get(Servo.class, "gate");
-//        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-//        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
-                new PIDFCoefficients(kP, 0, kD, 0));
-
+        shooter = new Flywheel(hardwareMap, "shooter", target, kP, kD, kF, stopBoostRange);
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -36,25 +31,28 @@ public class PIDTuner extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-            if (gamepad1.right_bumper){ shooter.setVelocity(target); }
-            if (gamepad1.dpadUpWasPressed()){ kP += 10; setCoefficients(); }
-            if (gamepad1.dpadDownWasPressed()){ kP -= 10; setCoefficients(); }
-            if (gamepad1.yWasPressed()){ kD += 0.1; setCoefficients(); }
-            if (gamepad1.aWasPressed()){ kD -= 0.1; setCoefficients(); }
-            if (gamepad1.left_trigger > 0.8){ intake.setPower(1); }
-            if (gamepad1.dpadLeftWasPressed()){ target += 10; }
-            if (gamepad1.dpadRightWasPressed()){ target -= 10; }
+            if (gamepad1.right_trigger > 0.2){ shooter.setTPS(target); } else { shooter.setTPS(0); }
+            if (gamepad1.left_trigger > 0.2){ intake.setPower(1.0); } else { intake.setPower(0); }
 
-            telemetry.addData("velo", shooter.getVelocity());
-            telemetry.addData("target", target);
-            telemetry.addData("kP", kP);
-            telemetry.addData("kD", kD);
+            if (gamepad1.dpadUpWasPressed())            //up
+                { shooter.updateParameters(0.1,0,0,0); }
+            if (gamepad1.dpadDownWasPressed())          //down
+                { shooter.updateParameters(-0.1,0,0,0); }
+            if (gamepad1.dpadRightWasPressed())         //right
+                { shooter.updateParameters(0,0.01,0,0); }
+            if (gamepad1.dpadLeftWasPressed())          //left
+                { shooter.updateParameters(0,-0.01,0,0); }
+            if (gamepad1.yWasPressed())                 //y
+                { shooter.updateParameters(0,0,10,0); }
+            if (gamepad1.aWasPressed())                 //a
+                { shooter.updateParameters(0,0,-10,0); }
+            if (gamepad1.bWasPressed())                 //b
+                { shooter.updateParameters(0,0,0,10); }
+            if (gamepad1.xWasPressed())                 //x
+                { shooter.updateParameters(0,0,0,-10); }
+
+            shooter.addTelemetry(telemetry);
             telemetry.update();
         }
-    }
-
-    void setCoefficients(){
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
-                new PIDFCoefficients(kP, 0, kD, 0));
     }
 }
